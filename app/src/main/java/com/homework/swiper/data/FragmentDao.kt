@@ -2,25 +2,25 @@ package com.homework.swiper.data
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.homework.swiper.FragmentRepository
 import com.homework.swiper.data.entities.ActualFragment
 import com.homework.swiper.data.entities.Fragments
 
 @Dao
-interface FragmentDao: FragmentRepository {
+interface FragmentDao {
 
     @Insert
-    override suspend fun add(fragment: Fragments)
+    suspend fun add(fragment: Fragments)
 
-    @Delete
-    override suspend fun remove(fragment: Fragments): Int
+    @Query("DELETE FROM fragments WHERE id >= :since")
+    suspend fun remove(since: Int)
 
     @Query("SELECT COUNT(id) FROM Fragments")
-    override fun getAmount(): LiveData<Int>
+    fun getAmount(): LiveData<Int>
 
     @Query("SELECT actualFragment FROM ActualFragment WHERE id = 0")
-    override fun getActualFragment(): LiveData<Int>
+    fun getActualFragment(): LiveData<Int>
 
     @Update
-    override suspend fun updateActualFragment(actual: ActualFragment): Int
+    suspend fun updateActualFragment(actual: ActualFragment)
+
 }

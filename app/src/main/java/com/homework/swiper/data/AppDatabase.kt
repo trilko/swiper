@@ -9,9 +9,4 @@ import com.homework.swiper.data.entities.*
 @Database(entities = [Fragments::class, ActualFragment::class], version = 1)
 abstract class AppDatabase: RoomDatabase() {
     abstract fun fragmentDao(): FragmentDao
-
-    companion object {
-
-
-    }
 }

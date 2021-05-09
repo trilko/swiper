@@ -3,17 +3,17 @@ package com.homework.swiper
 import androidx.lifecycle.LiveData
 import com.homework.swiper.data.entities.ActualFragment
 import com.homework.swiper.data.entities.Fragments
+import com.homework.swiper.data.models.FragmentModel
 
 interface FragmentRepository {
 
-    suspend fun add(fragment: Fragments)
+    val amountFragments: LiveData<Int>
+    val actualFragment: LiveData<Int>
 
-    suspend fun remove(fragment: Fragments): Int
+    suspend fun add()
 
-    fun getAmount(): LiveData<Int>
+    suspend fun remove(model: FragmentModel)
 
-    fun getActualFragment(): LiveData<Int>
-
-    suspend fun updateActualFragment(actual: ActualFragment): Int
+    suspend fun updateActualFragment(model: FragmentModel)
 
 }

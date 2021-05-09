@@ -6,7 +6,7 @@ import javax.inject.Inject
 class HandlerEvents {
 
 //    fun add(): Result {
-//        repository.add()
+//
 //    }
 //
 //    fun remove(): Result {

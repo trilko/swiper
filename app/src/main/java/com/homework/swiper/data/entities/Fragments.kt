@@ -5,6 +5,6 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class Fragments(
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     val id: Int
 )
