@@ -25,7 +25,7 @@ class FragmentRoomRepository @Inject constructor(
         fragmentDao.remove(model.currentNumber)
     }
 
-    override suspend fun updateActualFragment(model: FragmentModel) {
+    override suspend fun updateActual(model: FragmentModel) {
         fragmentDao.updateActualFragment(ActualFragment(0, model.currentNumber))
     }
 

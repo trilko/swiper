@@ -14,6 +14,6 @@ interface FragmentRepository {
 
     suspend fun remove(model: FragmentModel)
 
-    suspend fun updateActualFragment(model: FragmentModel)
+    suspend fun updateActual(model: FragmentModel)
 
 }
