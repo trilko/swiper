@@ -17,10 +17,10 @@ interface FragmentDao {
     @Query("SELECT COUNT(id) FROM Fragments")
     fun getAmount(): LiveData<Int>
 
-    @Query("SELECT actualFragment FROM ActualFragment WHERE id = 0")
+    @Query("SELECT actualFragment FROM ActualFragment")
     fun getActualFragment(): LiveData<Int>
 
-    @Update
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun updateActualFragment(actual: ActualFragment)
 
 }
