@@ -1,8 +1,7 @@
 package com.homework.swiper.dependencies.modules
 
-import android.app.Application
 import android.content.Context
-import com.homework.swiper.presentation.App
+import com.homework.swiper.presentation.application.App
 import dagger.Module
 import dagger.Provides
 

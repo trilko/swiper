@@ -1,4 +1,4 @@
-package com.homework.swiper.presentation
+package com.homework.swiper.presentation.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

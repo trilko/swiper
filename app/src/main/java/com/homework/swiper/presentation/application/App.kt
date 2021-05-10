@@ -1,4 +1,4 @@
-package com.homework.swiper.presentation
+package com.homework.swiper.presentation.application
 
 import android.app.Application
 import com.homework.swiper.dependencies.AppComponent

@@ -4,7 +4,7 @@ import android.content.Context
 import com.homework.swiper.data.AppDatabase
 import com.homework.swiper.dependencies.modules.AppModule
 import com.homework.swiper.dependencies.modules.DatabaseModule
-import com.homework.swiper.presentation.App
+import com.homework.swiper.presentation.application.App
 import dagger.BindsInstance
 import dagger.Component
 import javax.inject.Singleton
