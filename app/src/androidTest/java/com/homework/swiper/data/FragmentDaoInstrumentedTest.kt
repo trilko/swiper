@@ -5,17 +5,17 @@ import androidx.lifecycle.LiveData
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.homework.swiper.data.entities.ActualFragment
-import com.homework.swiper.data.entities.Fragments
+import com.homework.swiper.data.entities.FragmentEntity
 import com.homework.swiper.getOrAwaitValue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotEquals
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import kotlinx.coroutines.test.runBlockingTest
-import org.junit.Rule
 
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
@@ -25,8 +25,7 @@ class FragmentDaoInstrumentedTest {
     var instantTaskExecutorRule = InstantTaskExecutorRule()
     private lateinit var database: AppDatabase
     private lateinit var fragmentDao: FragmentDao
-    private lateinit var amountFragments: LiveData<Int>
-    private lateinit var actualFragment: LiveData<Int>
+    private lateinit var model: LiveData<FragmentEntity>
 
     @Before
     fun createDao() {
@@ -35,8 +34,7 @@ class FragmentDaoInstrumentedTest {
             AppDatabase::class.java
         ).allowMainThreadQueries().build()
         fragmentDao = database.fragmentDao()
-        amountFragments = fragmentDao.getAmount()
-        actualFragment = fragmentDao.getActualFragment()
+        model = fragmentDao.getFragmentEntity()
     }
 
     @After
@@ -45,85 +43,45 @@ class FragmentDaoInstrumentedTest {
     }
 
     @Test
+    fun addExpectOneElement() = runBlockingTest {
+        val expected = FragmentEntity(0, 1, 1)
+        fragmentDao.add(expected)
+        val real = model.getOrAwaitValue()
+        assertEquals(expected, real)
+    }
+
+    @Test
+    fun addFiveExpectOneElement() = runBlockingTest {
+        val one = FragmentEntity(0, 1, 1)
+        val two = FragmentEntity(0, 2, 2)
+        val three = FragmentEntity(0, 3, 3)
+        val four = FragmentEntity(0, 4, 4)
+        val five = FragmentEntity(0, 99, 99)
+        fragmentDao.add(one)
+        fragmentDao.add(two)
+        fragmentDao.add(three)
+        fragmentDao.add(four)
+        fragmentDao.add(five)
+        val real = model.getOrAwaitValue()
+        assertEquals(five, real)
+        assertNotEquals(four, real)
+        assertNotEquals(three, real)
+        assertNotEquals(two, real)
+        assertNotEquals(one, real)
+    }
+
+    @Test
     fun insertExpectNewFragment() = runBlockingTest {
-        val amountBefore = amountFragments.getOrAwaitValue()
-        fragmentDao.add(Fragments(0))
-        fragmentDao.add(Fragments(0))
-        fragmentDao.add(Fragments(0))
-        val amountAfter = amountFragments.getOrAwaitValue()
-        assertEquals(0, amountBefore)
-        assertEquals(3, amountAfter)
-    }
+        fragmentDao.add(FragmentEntity(0, 1, 1))
+        fragmentDao.add(FragmentEntity(0, 2, 2))
+        fragmentDao.add(FragmentEntity(0, 3, 3))
+        fragmentDao.add(FragmentEntity(0, 4, 4))
+        fragmentDao.add(FragmentEntity(0, 99, 99))
 
-    @Test
-    fun removeSinceThreeExpectRemoveFive() = runBlockingTest {
-        fragmentDao.add(Fragments(0))
-        fragmentDao.add(Fragments(0))
-        fragmentDao.add(Fragments(0))
-        fragmentDao.add(Fragments(0))
-        fragmentDao.add(Fragments(0))
-        fragmentDao.add(Fragments(0))
-        fragmentDao.add(Fragments(0))
-        fragmentDao.add(Fragments(0))
-        val amountBefore = amountFragments.getOrAwaitValue()
-        fragmentDao.remove(3)
-        val amountAfter = amountFragments.getOrAwaitValue()
-        assertEquals(8, amountBefore)
-        assertEquals(2, amountAfter)
-    }
-
-    @Test
-    fun removeSinceThreeExpectNotRemove() = runBlockingTest {
-        fragmentDao.add(Fragments(0))
-        fragmentDao.add(Fragments(0))
-        val amountBefore = amountFragments.getOrAwaitValue()
-        fragmentDao.remove(3)
-        val amountAfter = amountFragments.getOrAwaitValue()
-        assertEquals(2, amountBefore)
-        assertEquals(2, amountAfter)
-    }
-
-    @Test
-    fun removeSinceZeroExpectNotRemove() = runBlockingTest {
-        val amountBefore = amountFragments.getOrAwaitValue()
-        fragmentDao.remove(0)
-        val amountAfter = amountFragments.getOrAwaitValue()
-        assertEquals(0, amountBefore)
-        assertEquals(0, amountAfter)
-    }
-
-    @Test
-    fun removeSinceNegativeNumberExpectNotRemove() = runBlockingTest {
-        val amountBefore = amountFragments.getOrAwaitValue()
-        fragmentDao.remove(-1)
-        val amountAfter = amountFragments.getOrAwaitValue()
-        assertEquals(0, amountBefore)
-        assertEquals(0, amountAfter)
-    }
-
-    @Test
-    fun updateSevenTimesExpectUpdateLiveDataNumberAllTimes() = runBlockingTest {
-        fragmentDao.updateActualFragment(ActualFragment(id = 0, actualFragment = 6))
-        val amountFirst = actualFragment.getOrAwaitValue()
-        fragmentDao.updateActualFragment(ActualFragment(id = 0, actualFragment = 1))
-        val amountSecond = actualFragment.getOrAwaitValue()
-        fragmentDao.updateActualFragment(ActualFragment(id = 0, actualFragment = 5000))
-        val amountThird = actualFragment.getOrAwaitValue()
-        fragmentDao.updateActualFragment(ActualFragment(id = 0, actualFragment = 4))
-        val amountFour = actualFragment.getOrAwaitValue()
-        fragmentDao.updateActualFragment(ActualFragment(id = 0, actualFragment = 9))
-        val amountFive = actualFragment.getOrAwaitValue()
-        fragmentDao.updateActualFragment(ActualFragment(id = 0, actualFragment = 200))
-        val amountSix = actualFragment.getOrAwaitValue()
-        fragmentDao.updateActualFragment(ActualFragment(id = 0, actualFragment = 0))
-        val amountSeven = actualFragment.getOrAwaitValue()
-        assertEquals(6, amountFirst)
-        assertEquals(1, amountSecond)
-        assertEquals(5000, amountThird)
-        assertEquals(4, amountFour)
-        assertEquals(9, amountFive)
-        assertEquals(200, amountSix)
-        assertEquals(0, amountSeven)
+        val expected = FragmentEntity(0, 5, 8)
+        fragmentDao.update(expected)
+        val real = model.getOrAwaitValue()
+        assertEquals(expected, real)
     }
 
 }

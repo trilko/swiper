@@ -1,5 +1,6 @@
 package com.homework.swiper.data.models
 
 data class FragmentModel(
-    val currentNumber: Int
+    val currentNumber: Int,
+    var amount: Int
 )

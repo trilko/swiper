@@ -12,8 +12,7 @@ class ViewModelSwiper @Inject constructor(
     private val interactor: Interactor
 ): ViewModel() {
 
-    val amountFragments = interactor.getAmountFragments()
-    val currentFragment = interactor.getActualFragment()
+    val model = interactor.getModel()
 
     fun handleEvent(event: Event) {
         when(event) {
@@ -24,21 +23,27 @@ class ViewModelSwiper @Inject constructor(
         }
     }
 
-    private fun add(number: Int) {
+    private fun add(currentNumber: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            interactor.add()
+            model.value?.let {
+                interactor.add(FragmentModel(currentNumber, it.amount))
+            }
         }
     }
 
-    private fun remove(number: Int) {
+    private fun remove(currentNumber: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            interactor.remove(FragmentModel(number))
+            model.value?.let {
+                interactor.remove(FragmentModel(currentNumber, it.amount))
+            }
         }
     }
 
-    private fun change(number: Int) {
+    private fun change(currentNumber: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            interactor.change(FragmentModel(number))
+            model.value?.let {
+                interactor.change(FragmentModel(currentNumber, it.amount))
+            }
         }
     }
 

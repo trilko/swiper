@@ -6,11 +6,9 @@ import com.homework.swiper.domain.Result
 
 interface Interactor {
 
-    fun getAmountFragments(): LiveData<Int>
+    fun getModel(): LiveData<FragmentModel>
 
-    fun getActualFragment(): LiveData<Int>
-
-    suspend fun add(): Result
+    suspend fun add(model: FragmentModel): Result
 
     suspend fun remove(model: FragmentModel): Result
 

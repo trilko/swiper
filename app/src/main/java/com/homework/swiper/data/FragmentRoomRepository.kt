@@ -2,9 +2,8 @@ package com.homework.swiper.data
 
 import androidx.lifecycle.LiveData
 import com.homework.swiper.FragmentRepository
-import com.homework.swiper.data.entities.ActualFragment
-import com.homework.swiper.data.entities.Fragments
 import com.homework.swiper.data.models.FragmentModel
+import com.homework.swiper.data.utils.FragmentMapper
 import javax.inject.Inject
 
 class FragmentRoomRepository @Inject constructor(
@@ -13,20 +12,14 @@ class FragmentRoomRepository @Inject constructor(
 
     private val fragmentDao = database.fragmentDao()
 
-    override val amountFragments: LiveData<Int> = fragmentDao.getAmount()
+    override val model: LiveData<FragmentModel> = FragmentMapper().mapToModel(fragmentDao.getFragmentEntity())
 
-    override val actualFragment: LiveData<Int> = fragmentDao.getActualFragment()
-
-    override suspend fun add() {
-        fragmentDao.add(Fragments(0))
+    override suspend fun add(model: FragmentModel) {
+        fragmentDao.add(FragmentMapper().mapToEntity(model))
     }
 
-    override suspend fun remove(model: FragmentModel) {
-        fragmentDao.remove(model.currentNumber)
-    }
-
-    override suspend fun updateActual(model: FragmentModel) {
-        fragmentDao.updateActualFragment(ActualFragment(0, model.currentNumber))
+    override suspend fun update(model: FragmentModel) {
+        fragmentDao.update(FragmentMapper().mapToEntity(model))
     }
 
 }

@@ -7,21 +7,32 @@ import com.homework.swiper.data.models.FragmentModel
 import javax.inject.Inject
 
 class HandlerEvents @Inject constructor(
-    private val repository: FragmentRepository
+    private val repository: FragmentRepository,
+    private val validator: ValidatorModel
 ): Interactor {
 
-    override fun getAmountFragments(): LiveData<Int> = repository.amountFragments
+    override fun getModel(): LiveData<FragmentModel> = repository.model
 
-    override fun getActualFragment(): LiveData<Int> = repository.actualFragment
-
-    override suspend fun add(): Result {
-        repository.add()
-        return Result.GOOD
+    override suspend fun add(model: FragmentModel): Result {
+        return if (validator.validateAdd(model)) {
+            val result = model.copy(
+                currentNumber = model.currentNumber + 1,
+                amount = model.amount + 1
+            )
+            repository.add(result)
+            Result.GOOD
+        } else {
+            Result.BAD
+        }
     }
 
     override suspend fun remove(model: FragmentModel): Result {
-        return if (model.currentNumber >= 0) {
-            repository.remove(model)
+        return if (validator.validateRemove(model)) {
+            val result = model.copy(
+                currentNumber = model.currentNumber - 1,
+                amount = model.currentNumber - 1
+            )
+            repository.update(result)
             Result.GOOD
         } else {
             Result.BAD
@@ -29,8 +40,12 @@ class HandlerEvents @Inject constructor(
     }
 
     override suspend fun change(model: FragmentModel): Result {
-        return if (model.currentNumber >= 0) {
-            repository.updateActual(model)
+        return if (validator.validateChange(model)) {
+            val result = model.copy(
+                currentNumber = model.currentNumber,
+                amount = model.amount
+            )
+            repository.update(result)
             Result.GOOD
         } else {
             Result.BAD
