@@ -1,25 +1,27 @@
 package com.homework.swiper.presentation.viewModel
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.homework.swiper.Interactor
 import com.homework.swiper.data.models.FragmentModel
 import com.homework.swiper.presentation.*
-import kotlinx.coroutines.*
+import com.homework.swiper.presentation.base.BaseViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
-class ViewModelSwiper @Inject constructor(
+class SwiperViewModel @Inject constructor(
     private val interactor: Interactor
-): ViewModel() {
+): BaseViewModel() {
 
     val model = interactor.getModel()
 
-    fun handleEvent(event: Event) {
-        when(event) {
-            is Plus -> add(event.number)
-            is Minus -> remove(event.number)
-            is Change -> change(event.number)
-            is CreateNotification -> createNotification(event.number)
+    fun handleEvent(swiperEvents: SwiperEvents) {
+        when(swiperEvents) {
+            is Plus -> add(swiperEvents.number)
+            is Minus -> remove(swiperEvents.number)
+            is Change -> change(swiperEvents.number)
+            is CreateNotification -> createNotification(swiperEvents.number)
         }
     }
 

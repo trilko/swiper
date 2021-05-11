@@ -15,11 +15,12 @@ class HandlerEvents @Inject constructor(
 
     override suspend fun add(model: FragmentModel): Result {
         return if (validator.validateAdd(model)) {
+            val newActual = model.amount + 1
             val result = model.copy(
-                currentNumber = model.currentNumber + 1,
-                amount = model.amount + 1
+                currentNumber = newActual,
+                amount = newActual
             )
-            repository.add(result)
+            repository.set(result)
             Result.GOOD
         } else {
             Result.BAD
@@ -28,11 +29,12 @@ class HandlerEvents @Inject constructor(
 
     override suspend fun remove(model: FragmentModel): Result {
         return if (validator.validateRemove(model)) {
+            val newActual = model.currentNumber - 1
             val result = model.copy(
-                currentNumber = model.currentNumber - 1,
-                amount = model.currentNumber - 1
+                currentNumber = newActual,
+                amount = newActual
             )
-            repository.update(result)
+            repository.set(result)
             Result.GOOD
         } else {
             Result.BAD
@@ -45,7 +47,7 @@ class HandlerEvents @Inject constructor(
                 currentNumber = model.currentNumber,
                 amount = model.amount
             )
-            repository.update(result)
+            repository.set(result)
             Result.GOOD
         } else {
             Result.BAD

@@ -7,8 +7,6 @@ interface FragmentRepository {
 
     val model: LiveData<FragmentModel>
 
-    suspend fun add(model: FragmentModel)
-
-    suspend fun update(model: FragmentModel)
+    suspend fun set(model: FragmentModel)
 
 }

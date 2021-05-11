@@ -9,10 +9,10 @@ class ValidatorModel @Inject constructor() {
         val current = model.currentNumber
         val amount = model.amount
 
-        if (current < 1) {
+        if (current < 0) {
             return false
         }
-        if (amount < 1) {
+        if (amount < 0) {
             return false
         }
         if (current > amount) {
@@ -26,10 +26,10 @@ class ValidatorModel @Inject constructor() {
         val current = model.currentNumber
         val amount = model.amount
 
-        if (current < 2) {
+        if (current < 1) {
             return false
         }
-        if (amount < 2) {
+        if (amount < 1) {
             return false
         }
         if (current > amount) {
@@ -43,10 +43,10 @@ class ValidatorModel @Inject constructor() {
         val current = model.currentNumber
         val amount = model.amount
 
-        if (current < 1) {
+        if (current < 0) {
             return false
         }
-        if (amount < 1) {
+        if (amount < 0) {
             return false
         }
         if (current > amount) {

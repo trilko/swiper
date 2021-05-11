@@ -3,9 +3,10 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment_swiper"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.view.Swipe"
+    tools:context=".presentation.view.SwipeFragment"
     android:background="@color/main">
 
     <Button
@@ -23,7 +24,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/bottomEditText"
+        android:id="@+id/bottomButtonSpace"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="35dp"
@@ -48,8 +49,7 @@
         android:backgroundTint="@color/white"
         android:layout_marginBottom="32dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/bottomEditText"
-        android:visibility="gone"/>
+        app:layout_constraintStart_toStartOf="@+id/bottomButtonSpace" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/plusButton"
@@ -61,7 +61,7 @@
         android:backgroundTint="@color/white"
         android:layout_marginBottom="32dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/bottomEditText"/>
+        app:layout_constraintEnd_toEndOf="@+id/bottomButtonSpace"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

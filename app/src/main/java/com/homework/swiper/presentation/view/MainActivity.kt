@@ -2,30 +2,56 @@ package com.homework.swiper.presentation.view
 
 import android.os.Bundle
 import android.util.Log
-import androidx.appcompat.app.AppCompatActivity
-import androidx.viewpager.widget.PagerAdapter
+import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
+import com.homework.swiper.data.models.FragmentModel
 import com.homework.swiper.databinding.ActivityMainBinding
-import com.homework.swiper.presentation.SwiperViewPagerAdapter
-import androidx.viewpager.widget.ViewPager.OnPageChangeListener
-import androidx.viewpager2.widget.ViewPager2
+import com.homework.swiper.presentation.Change
+import com.homework.swiper.presentation.SwiperPagerAdapter
+import com.homework.swiper.presentation.base.BaseActivity
+import com.homework.swiper.presentation.viewModel.SwiperViewModel
 
-class MainActivity : AppCompatActivity() {
+class MainActivity: BaseActivity<SwiperViewModel>() {
 
-    private var _binding: ActivityMainBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: ActivityMainBinding
 
-    val TAG = "myLogs"
-    val PAGE_COUNT = 10
+    override fun getViewModelClass() = SwiperViewModel::class.java
 
-    var pager: ViewPager2 = binding.pager
-    lateinit var pagerAdapter: PagerAdapter
+    lateinit var pager: ViewPager
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        _binding = ActivityMainBinding.inflate(layoutInflater)
+        binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        initObservers()
+        initViewPager()
+    }
 
+    private fun initObservers() {
+        viewModel.model.observe(this) {
+            changeActualData(it)
+        }
+    }
+
+    private fun changeActualData(model: FragmentModel) {
+        val listFragments = ArrayList<Fragment>()
+        repeat(model.amount) {
+            listFragments.add(SwipeFragment.newInstance(it + 1))
+        }
+        val pagerAdapter = SwiperPagerAdapter(supportFragmentManager)
+        pagerAdapter.putElements(listFragments)
+        pager.adapter = pagerAdapter
+        pager.currentItem = model.currentNumber
+    }
+
+    private fun initViewPager() {
+        pager = binding.vPager
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        viewModel.handleEvent(Change(pager.currentItem))
     }
 
 }

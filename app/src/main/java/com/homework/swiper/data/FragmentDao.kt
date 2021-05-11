@@ -10,6 +10,9 @@ interface FragmentDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun add(entity: FragmentEntity)
 
+    @Query("SELECT * FROM fragmententity")
+    fun getData(): FragmentEntity?
+
     @Update
     suspend fun update(entity: FragmentEntity)
 

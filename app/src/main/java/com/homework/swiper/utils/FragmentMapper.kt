@@ -1,4 +1,4 @@
-package com.homework.swiper.data.utils
+package com.homework.swiper.utils
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations

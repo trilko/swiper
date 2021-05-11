@@ -1,4 +1,4 @@
-package com.homework.swiper.data.utils
+package com.homework.swiper.utils
 
 interface Mapper<E, M> {
     fun mapToEntity(model: M): E
