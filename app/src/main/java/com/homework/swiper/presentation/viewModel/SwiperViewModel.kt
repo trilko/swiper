@@ -8,6 +8,7 @@ import com.homework.swiper.presentation.base.BaseViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class SwiperViewModel @Inject constructor(
@@ -41,9 +42,11 @@ class SwiperViewModel @Inject constructor(
     }
 
     private fun change(currentNumber: Int) {
-        viewModelScope.launch(Dispatchers.IO) {
+        runBlocking {
+            withContext(Dispatchers.IO) {
             model.value?.let {
                 interactor.change(FragmentModel(currentNumber, it.amount))
+            }
             }
         }
     }
