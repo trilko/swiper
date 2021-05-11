@@ -1,17 +1,24 @@
 package com.homework.swiper.presentation.view
 
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.Context.NOTIFICATION_SERVICE
+import android.content.Intent
+import android.os.Build
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
+import androidx.core.app.NotificationCompat
+import com.homework.swiper.R
 import com.homework.swiper.databinding.FragmentSwipeBinding
-import com.homework.swiper.presentation.CreateNotification
 import com.homework.swiper.presentation.Minus
 import com.homework.swiper.presentation.Plus
-import com.homework.swiper.presentation.SwiperEvents
 import com.homework.swiper.presentation.base.BaseFragment
 import com.homework.swiper.presentation.viewModel.SwiperViewModel
+import com.homework.swiper.utils.NotificationChannelSetting
+
 
 class SwipeFragment : BaseFragment<SwiperViewModel>() {
 
@@ -21,6 +28,7 @@ class SwipeFragment : BaseFragment<SwiperViewModel>() {
     private val binding get() = _binding!!
 
     companion object {
+        const val notification = "FROM_NOTIFICATION"
         private const val args: String = "ARG_PAGE_NUMBER"
 
         fun newInstance(page: Int) = SwipeFragment().apply {
@@ -47,6 +55,7 @@ class SwipeFragment : BaseFragment<SwiperViewModel>() {
             binding.minusButton.visibility = View.GONE
         }
         initClickListeners()
+
     }
 
     private fun initClickListeners() {
@@ -57,9 +66,63 @@ class SwipeFragment : BaseFragment<SwiperViewModel>() {
             viewModel.handleEvent(Plus(pageNumber))
         }
         binding.newNotification.setOnClickListener {
-            viewModel.handleEvent(CreateNotification(pageNumber))
+            if (Build.VERSION.SDK_INT >= 26) {
+                createNotificationWithChannel()
+            } else {
+                createNotification()
+            }
         }
     }
+
+    private fun createNotification() {
+        val notificationIntent = Intent(requireActivity(), MainActivity::class.java)
+        notificationIntent.putExtra(notification, pageNumber)
+
+        val notificationPendingIntent = PendingIntent.getActivity(
+            requireContext(),
+            0,
+            notificationIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT)
+
+        val builder = NotificationCompat.Builder(requireContext())
+            .setSmallIcon(R.mipmap.ic_launcher)
+            .setContentTitle("Chats heads active")
+            .setContentText("Notification $pageNumber")
+            .setContentIntent(notificationPendingIntent)
+            .setAutoCancel(true)
+
+        val notification = builder.build()
+        val notificationManager = requireActivity().getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.notify(1, notification)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun createNotificationWithChannel() {
+        val notificationIntent = Intent(requireActivity(), MainActivity::class.java)
+        notificationIntent.putExtra(notification, pageNumber)
+
+        val notificationPendingIntent = PendingIntent.getActivity(
+            requireContext(),
+            0,
+            notificationIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT)
+
+        val builder = NotificationCompat.Builder(requireContext())
+            .setSmallIcon(R.mipmap.ic_launcher)
+            .setContentTitle("Chats heads active")
+            .setContentText("Notification $pageNumber")
+            .setChannelId(NotificationChannelSetting.id)
+            .setContentIntent(notificationPendingIntent)
+            .setAutoCancel(true)
+
+        val notification = builder.build()
+        val notificationManager = requireActivity().getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+
+        notificationManager.createNotificationChannel(NotificationChannelSetting.createChannel())
+        notificationManager.notify(1, notification)
+    }
+
+
 
     override fun onDestroyView() {
         super.onDestroyView()

@@ -21,7 +21,6 @@ class SwiperViewModel @Inject constructor(
             is Plus -> add(swiperEvents.number)
             is Minus -> remove(swiperEvents.number)
             is Change -> change(swiperEvents.number)
-            is CreateNotification -> createNotification(swiperEvents.number)
         }
     }
 
@@ -49,7 +48,4 @@ class SwiperViewModel @Inject constructor(
         }
     }
 
-    private fun createNotification(number: Int) {
-
-    }
 }

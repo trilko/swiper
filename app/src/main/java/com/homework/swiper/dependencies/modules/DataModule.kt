@@ -8,10 +8,7 @@ import com.homework.swiper.data.FragmentRoomRepository
 import com.homework.swiper.data.entities.FragmentEntity
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 import javax.inject.Singleton
 
 @Module
@@ -23,9 +20,11 @@ object DataModule {
         context: Context
     ): AppDatabase {
         val db = Room.databaseBuilder(context, AppDatabase::class.java, "database").build()
-        GlobalScope.launch(Dispatchers.IO) {
-            if(db.fragmentDao().getData() == null) {
-                db.fragmentDao().add(FragmentEntity(0, 1, 1))
+        runBlocking {
+            withContext(Dispatchers.IO) {
+                if(db.fragmentDao().getData() == null) {
+                    db.fragmentDao().add(FragmentEntity(0, 1, 1))
+                }
             }
         }
         return db

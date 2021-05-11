@@ -1,7 +1,6 @@
 package com.homework.swiper.presentation.view
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.homework.swiper.data.models.FragmentModel
@@ -19,13 +18,20 @@ class MainActivity: BaseActivity<SwiperViewModel>() {
 
     lateinit var pager: ViewPager
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        val fromNotification = intent.getIntExtra(SwipeFragment.notification, -1)
+        if (fromNotification != -1) {
+            handleNotification(fromNotification)
+        }
         initObservers()
         initViewPager()
+    }
+
+    private fun handleNotification(numberFragment: Int) {
+        viewModel.handleEvent(Change(numberFragment - 1))
     }
 
     private fun initObservers() {
@@ -47,11 +53,6 @@ class MainActivity: BaseActivity<SwiperViewModel>() {
 
     private fun initViewPager() {
         pager = binding.vPager
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        viewModel.handleEvent(Change(pager.currentItem))
     }
 
 }
